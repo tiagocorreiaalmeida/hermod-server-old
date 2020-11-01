@@ -5,9 +5,12 @@ import { IUserRepo } from '../../repos/IUserRepo';
 import { CreateUserUseCaseDTO } from './CreateUserUseCaseDTO';
 import { Validator } from '../../../../shared/logic/validators/Validator';
 import { UniqueEntityID } from '../../../../shared/core/UniqueEntityID';
+import brypt from 'bcrypt';
 
 export const USER_CREATION_ERROR = 'There was an error when creating the user.';
 export const EMAIL_EXISTS_ERROR = 'An User with the given e-mail already exists.';
+
+const HASH_SALT = 10;
 
 export class CreateUserUseCase implements UseCase<CreateUserUseCaseDTO, Result<User>> {
   constructor(
@@ -22,9 +25,12 @@ export class CreateUserUseCase implements UseCase<CreateUserUseCaseDTO, Result<U
       return Result.fail<User>(error.getError());
     }
 
+    const hashedPassword = brypt.hashSync(dto.password, HASH_SALT);
+
     const user: User = {
-      id: new UniqueEntityID().toString(),
       ...dto,
+      id: new UniqueEntityID().toString(),
+      password: hashedPassword,
     };
 
     const userExists = await this.userRepo.exists(user);
