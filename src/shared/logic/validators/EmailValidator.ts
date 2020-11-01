@@ -11,11 +11,7 @@ export class EmailValidator<T> implements Validator<T> {
   validate(input: T): Result<T> {
     const email = input[this.emailFieldName];
 
-    if (typeof email !== 'string') {
-      return Result.fail<T>(invalidParamError('E-Mail'));
-    }
-
-    const isEmail = validator.isEmail(email);
+    const isEmail = validator.isEmail(`${email}`);
 
     if (!isEmail) {
       return Result.fail<T>(invalidParamError('E-Mail'));
