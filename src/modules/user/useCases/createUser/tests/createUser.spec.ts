@@ -4,13 +4,19 @@ import { ValidatorComposite } from '../../../../../shared/logic/validators/Valid
 import { EmailValidator } from '../../../../../shared/logic/validators/EmailValidator';
 import { CreateUserUseCaseDTO } from '../CreateUserUseCaseDTO';
 import { FakeUserRepo } from '../../../repos/fakes/fakeUserRepo';
-import { invalidParamError } from '../../../../../shared/logic/Errors';
+import { invalidLengthError, invalidParamError } from '../../../../../shared/logic/Errors';
+import { RequiredLengthValidator } from '../../../../../shared/logic/validators/RequiredLengthValidator';
 
 const makeValidators = () => {
   const validators: Validator<CreateUserUseCaseDTO>[] = [];
 
   const emailValidator = new EmailValidator<CreateUserUseCaseDTO>('email');
+  const passwordValidator = new RequiredLengthValidator<CreateUserUseCaseDTO>('password', {
+    min: 6,
+  });
+
   validators.push(emailValidator);
+  validators.push(passwordValidator);
 
   return new ValidatorComposite(validators);
 };
@@ -44,5 +50,19 @@ describe('Create User', () => {
     const result = await sut.execute(invalidDTO);
     expect(result.isError).toBe(true);
     expect(result.getError()).toBe(invalidParamError('E-Mail'));
+  });
+
+  it('Should reject an invalid password', async () => {
+    const { sut } = makeSut();
+
+    const invalidDTO: CreateUserUseCaseDTO = {
+      email: 'valid_mail@mail.com',
+      name: 'your aunt name here',
+      password: 'damn',
+    };
+
+    const result = await sut.execute(invalidDTO);
+    expect(result.isError).toBe(true);
+    expect(result.getError()).toBe(invalidLengthError('password', { min: 6 }));
   });
 });
