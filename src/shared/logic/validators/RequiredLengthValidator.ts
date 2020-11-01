@@ -5,7 +5,7 @@ import { Validator } from './Validator';
 
 interface FieldLengthOptions {
   min: number;
-  max: number;
+  max?: number;
 }
 
 export class RequiredLengthValidator<T> implements Validator<T> {
