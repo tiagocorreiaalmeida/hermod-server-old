@@ -21,7 +21,7 @@ export class RequiredLengthValidator<T> implements Validator<T> {
     const field = input[this.fieldName];
     const isValid = validator.isLength(`${field}`, { min, max });
 
-    if (isValid) {
+    if (!isValid) {
       return Result.fail<T>(invalidLengthError(`${this.fieldName}`, { min, max }));
     }
 
