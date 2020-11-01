@@ -4,7 +4,7 @@ import { IUserRepo } from '../IUserRepo';
 
 export class FakeUserRepo extends FakeRepo<User> implements IUserRepo {
   get items(): User[] {
-    return this.items;
+    return this._items;
   }
 
   public async findUserById(userId: string): Promise<User | null> {
