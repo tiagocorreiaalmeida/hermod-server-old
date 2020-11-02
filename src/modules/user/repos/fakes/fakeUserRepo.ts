@@ -27,18 +27,20 @@ export class FakeUserRepo extends FakeRepo<User> implements IUserRepo {
     return null;
   }
 
-  public async exists(targetUser: User): Promise<boolean> {
-    const found = this.items.some((user) => this.compareFakeItems(user, targetUser));
+  async findUserByEmailOrUsername(email: string, username: string): Promise<User | null> {
+    const user = this.items.find((user) => user.email === email || user.username === username);
 
-    return found;
+    return user || null;
+  }
+
+  public async exists(userId: string): Promise<boolean> {
+    const user = this.items.find((user) => user.id === userId);
+
+    return !!user;
   }
 
   public async save(user: User): Promise<void> {
-    const exists = await this.exists(user);
-
-    if (!exists) {
-      this.items.push(user);
-    }
+    this.items.push(user);
   }
 
   public compareFakeItems = (user: User, targetUser: User): boolean =>

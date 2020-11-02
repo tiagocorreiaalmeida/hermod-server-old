@@ -1,28 +1,26 @@
+import brypt from 'bcrypt';
+
 import { UseCase } from '../../../../shared/application/useCase';
 import { Result } from '../../../../shared/core/Result';
 import { User } from '../../domain/User';
 import { IUserRepo } from '../../repos/IUserRepo';
 import { CreateUserUseCaseDTO } from './CreateUserUseCaseDTO';
-import { Validator } from '../../../../shared/logic/validators/Validator';
 import { UniqueEntityID } from '../../../../shared/core/UniqueEntityID';
-import brypt from 'bcrypt';
+import { validateUserCreate } from './createUserValidator';
 
-export const USER_CREATION_ERROR = 'There was an error when creating the user.';
 export const EMAIL_EXISTS_ERROR = 'An User with the given e-mail already exists.';
+export const USERNAME_EXISTS_ERROR = 'An User with the given username already exists.';
 
 const HASH_SALT = 10;
 
 export class CreateUserUseCase implements UseCase<CreateUserUseCaseDTO, Result<User>> {
-  constructor(
-    private readonly validation: Validator<CreateUserUseCaseDTO>,
-    private readonly userRepo: IUserRepo,
-  ) {}
+  constructor(private readonly userRepo: IUserRepo) {}
 
   async execute(dto: CreateUserUseCaseDTO): Promise<Result<User>> {
-    const error = this.validation.validate(dto);
+    const validation = validateUserCreate(dto);
 
-    if (error.isError) {
-      return Result.fail<User>(error.getError());
+    if (validation.isError) {
+      return Result.fail<User>(validation.getError());
     }
 
     const hashedPassword = brypt.hashSync(dto.password, HASH_SALT);
@@ -33,18 +31,15 @@ export class CreateUserUseCase implements UseCase<CreateUserUseCaseDTO, Result<U
       password: hashedPassword,
     };
 
-    const userExists = await this.userRepo.exists(user);
+    const userExists = await this.userRepo.findUserByEmailOrUsername(dto.email, dto.username);
 
     if (userExists) {
-      return Result.fail<User>(EMAIL_EXISTS_ERROR);
+      return Result.fail<User>(
+        userExists.email === dto.email ? EMAIL_EXISTS_ERROR : USERNAME_EXISTS_ERROR,
+      );
     }
 
-    try {
-      await this.userRepo.save(user);
-    } catch (err) {
-      return Result.fail<User>(USER_CREATION_ERROR);
-    }
-
+    await this.userRepo.save(user);
     return Result.success<User>(user);
   }
 }
