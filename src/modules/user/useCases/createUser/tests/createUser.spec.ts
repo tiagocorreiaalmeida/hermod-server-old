@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { CreateUserUseCase, EMAIL_EXISTS_ERROR, USERNAME_EXISTS_ERROR } from '../CreateUserUseCase';
+import { CreateUserUseCase } from '../CreateUserUseCase';
 import { CreateUserUseCaseDTO } from '../CreateUserUseCaseDTO';
 import { FakeUserRepo } from '../../../repos/fakes/fakeUserRepo';
 import { invalidLengthError, invalidParamError } from '../../../../../shared/logic/Errors';
@@ -10,6 +10,7 @@ import {
   MIN_USERNAME_LENGTH,
   MAX_USERNAME_LENGTH,
 } from '../createUserValidator';
+import { EMAIL_EXISTS_ERROR, USERNAME_EXISTS_ERROR } from '../createUserErrors';
 
 interface SutProps {
   sut: CreateUserUseCase;

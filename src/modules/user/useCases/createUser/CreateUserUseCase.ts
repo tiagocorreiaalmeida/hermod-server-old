@@ -8,8 +8,7 @@ import { CreateUserUseCaseDTO } from './CreateUserUseCaseDTO';
 import { UniqueEntityID } from '../../../../shared/core/UniqueEntityID';
 import { validateUserCreate } from './createUserValidator';
 
-export const EMAIL_EXISTS_ERROR = 'An User with the given e-mail already exists.';
-export const USERNAME_EXISTS_ERROR = 'An User with the given username already exists.';
+import { EMAIL_EXISTS_ERROR, USERNAME_EXISTS_ERROR } from './createUserErrors';
 
 const HASH_SALT = 10;
 
