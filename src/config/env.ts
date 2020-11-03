@@ -1,4 +1,5 @@
 import * as envVar from 'env-var';
+import ms from 'ms';
 
 type ENVIRONMENT_TYPE = 'test' | 'production' | 'development';
 
@@ -9,9 +10,18 @@ const ENVIRONMENT: ENVIRONMENT_TYPE = envVar
   .required()
   .asEnum(['development', 'test', 'production']);
 
+const ACCESS_TOKEN_SECRET = envVar.get('ACCESS_TOKEN_SECRET').required().asString();
+const ACCESS_TOKEN_DURATION = envVar.get('ACCESS_TOKEN_DURATION').required().asString();
+const REFRESH_TOKEN_SECRET = envVar.get('REFRESH_TOKEN_SECRET').required().asString();
+const REFRESH_TOKEN_DURATION = envVar.get('REFRESH_TOKEN_DURATION').required().asString();
+
 const env = {
   PORT,
   ENVIRONMENT,
+  ACCESS_TOKEN_SECRET,
+  ACCESS_TOKEN_DURATION: ms(ms(ACCESS_TOKEN_DURATION), { long: true }),
+  REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_DURATION: ms(ms(REFRESH_TOKEN_DURATION), { long: true }),
 };
 
 export { env };
