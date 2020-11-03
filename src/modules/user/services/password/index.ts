@@ -1,4 +1,4 @@
 export * from './passwordService';
 import { BcryptPasswordService } from './bcryptPasswordService';
 
-export const authService = new BcryptPasswordService();
+export const passwordService = new BcryptPasswordService();

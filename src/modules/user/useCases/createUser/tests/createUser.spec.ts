@@ -5,10 +5,10 @@ import { CreateUserUseCaseDTO } from '../CreateUserUseCaseDTO';
 import { FakeUserRepo } from '../../../repos/fakes/fakeUserRepo';
 import { invalidLengthError, invalidParamError } from '../../../../../shared/logic/Errors';
 import {
-  MIN_PASSWORD_LENGTH,
-  MAX_PASSWORD_LENGTH,
-  MIN_USERNAME_LENGTH,
-  MAX_USERNAME_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  USERNAME_MIN_LENGTH,
+  USERNAME_MAX_LENGTH,
 } from '../createUserValidator';
 import { EMAIL_EXISTS_ERROR, USERNAME_EXISTS_ERROR } from '../createUserErrors';
 
@@ -21,8 +21,8 @@ interface SutProps {
 const fakeUserRepo = new FakeUserRepo();
 const validDto: CreateUserUseCaseDTO = {
   email: faker.internet.email(),
-  password: '1'.repeat(MIN_PASSWORD_LENGTH),
-  username: '1'.repeat(MIN_USERNAME_LENGTH),
+  password: '1'.repeat(PASSWORD_MIN_LENGTH),
+  username: '1'.repeat(USERNAME_MIN_LENGTH),
 };
 
 const makeSut = (): SutProps => {
@@ -52,11 +52,11 @@ describe('Create User', () => {
 
     const result = await sut.execute({
       ...validDto,
-      password: '1'.repeat(MIN_PASSWORD_LENGTH - 1),
+      password: '1'.repeat(PASSWORD_MIN_LENGTH - 1),
     });
     expect(result.isError).toBeTruthy();
     expect(result.getError()).toBe(
-      invalidLengthError('password', { min: MIN_PASSWORD_LENGTH, max: MAX_PASSWORD_LENGTH }),
+      invalidLengthError('password', { min: PASSWORD_MIN_LENGTH, max: PASSWORD_MAX_LENGTH }),
     );
   });
 
@@ -65,11 +65,11 @@ describe('Create User', () => {
 
     const result = await sut.execute({
       ...validDto,
-      password: '1'.repeat(MAX_PASSWORD_LENGTH + 1),
+      password: '1'.repeat(PASSWORD_MAX_LENGTH + 1),
     });
     expect(result.isError).toBeTruthy();
     expect(result.getError()).toBe(
-      invalidLengthError('password', { min: MIN_PASSWORD_LENGTH, max: MAX_PASSWORD_LENGTH }),
+      invalidLengthError('password', { min: PASSWORD_MIN_LENGTH, max: PASSWORD_MAX_LENGTH }),
     );
   });
 
@@ -78,11 +78,11 @@ describe('Create User', () => {
 
     const result = await sut.execute({
       ...validDto,
-      username: '1'.repeat(MIN_USERNAME_LENGTH - 1),
+      username: '1'.repeat(USERNAME_MIN_LENGTH - 1),
     });
     expect(result.isError).toBeTruthy();
     expect(result.getError()).toBe(
-      invalidLengthError('username', { min: MIN_USERNAME_LENGTH, max: MAX_USERNAME_LENGTH }),
+      invalidLengthError('username', { min: USERNAME_MIN_LENGTH, max: USERNAME_MAX_LENGTH }),
     );
   });
 
@@ -91,11 +91,11 @@ describe('Create User', () => {
 
     const result = await sut.execute({
       ...validDto,
-      username: '1'.repeat(MAX_USERNAME_LENGTH + 1),
+      username: '1'.repeat(USERNAME_MAX_LENGTH + 1),
     });
     expect(result.isError).toBeTruthy();
     expect(result.getError()).toBe(
-      invalidLengthError('username', { min: MIN_USERNAME_LENGTH, max: MAX_USERNAME_LENGTH }),
+      invalidLengthError('username', { min: USERNAME_MIN_LENGTH, max: USERNAME_MAX_LENGTH }),
     );
   });
 
