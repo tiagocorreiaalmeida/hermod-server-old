@@ -5,7 +5,11 @@
     "module": "CommonJS",
     "rootDir": "./src",
     "outDir": "./dist",
-    "lib": ["ES2016", "ESNext.AsyncIterable"],
+    "lib": [
+      "ES2016",
+      "ESNext.AsyncIterable"
+    ],
+    "strict": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
