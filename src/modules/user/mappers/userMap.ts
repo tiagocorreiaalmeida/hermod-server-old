@@ -1,5 +1,5 @@
 import { Mapper } from '../../../shared/infra/Mapper';
-import { User } from '../domain/user';
+import { User } from '../domain/User';
 import { UserDTO } from '../dtos/userDTO';
 
 export class UserMap implements Mapper<User> {
